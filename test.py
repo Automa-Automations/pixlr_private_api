@@ -23,7 +23,7 @@ def gen_imgase():
 
 
 thhreads = []
-for i in range(3):
+for i in range(1):
     thread = threading.Thread(target=gen_imgase)
     thread.start()
     thhreads.append(thread)

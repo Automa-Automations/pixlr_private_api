@@ -12,7 +12,7 @@ This Python module provides a simple interface for automating actions on the Pix
 1. **Import the Module:**
 
    ```python
-   from pixlr_api import PixlrApi
+   from pixlr_private_api.main import PixlrApi
    ```
 
 2. **Initialize PixlrApi Object:**
