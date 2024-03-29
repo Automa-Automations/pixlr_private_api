@@ -1,83 +1,61 @@
-A Python package for generating and interacting with temporary email addresses.
+### Pixlr API Usage Guide
 
-## Installation
+This Python module provides a simple interface for automating actions on the Pixlr platform, including registration, email verification, generating images, and deleting accounts. Below is a guide on how to use this module effectively:
 
-You can install the package via pip:
+#### Prerequisites:
 
-```python
-pip install temp_email_automa
-```
+- Python 3.x installed on your system.
+- Necessary Python libraries installed, including `requests`.
 
-## Usage
+#### Usage Steps:
 
-Import the `TempMail` class from the package:
+1. **Import the Module:**
 
-```python
-from temp_email_automa.main import TempMail
-```
+   ```python
+   from pixlr_api import PixlrApi
+   ```
 
-Create an instance of `TempMail` with optional parameters for login and domain. If not provided, a random email address will be generated:
+2. **Initialize PixlrApi Object:**
 
-```python
-temp_mail = TempMail(login="example", domain="example.com")
-```
+   ```python
+   pixlr = PixlrApi()
+   ```
 
-You can also generate a random email address using:
+3. **Registration:**
 
-```python
-temp_mail.generate_random_email_address()
-```
+   ```python
+   registered = pixlr.register()
+   if registered:
+       print("Successfully registered!")
+   ```
 
-To get the email address generated or provided:
+4. **Email Verification:**
 
-```python
-email_address = temp_mail.email
-```
+   ```python
+   verified = pixlr.verify_email()
+   if verified:
+       print("Email verified successfully!")
+   ```
 
-You can get a list of active domains for email addresses using:
+5. **Generate Image:**
 
-```python
-active_domains = temp_mail.get_list_of_active_domains()
-```
+   ```python
+   # Provide width, height, amount, and prompt for image generation
+   images = pixlr.generate_image(width, height, amount, prompt)
+   # 'images' will contain paths to the generated images
+   ```
 
-To retrieve a list of emails in the mailbox:
+6. **Delete Account (Optional):**
+   ```python
+   deleted = pixlr.delete_account()
+   if deleted:
+       print("Account deleted successfully!")
+   ```
 
-```python
-emails = temp_mail.get_list_of_emails()
-```
+#### Additional Notes:
 
-Retrieve a single email by its id:
+- Ensure to handle errors and exceptions appropriately for robust usage.
+- This module interacts with Pixlr through web requests, so network connectivity is required.
+- API requests may be rate-limited or subject to changes by Pixlr, so handle responses accordingly.
 
-```python
-email_id = 1  # Example id
-single_email = temp_mail.get_single_email(email_id)
-print(single_email)
-```
-
-## Data Structures
-
-The package provides a `Email` data class representing an email message with the following attributes:
-
-- `id`: str
-- `sender`: str
-- `subject`: str
-- `date`: str
-- `body`: str
-- `textBody`: str
-- `htmlBody`: str
-
-Example:
-
-```python
-from dataclasses import dataclass
-
-@dataclass
-class Email:
-    id: str
-    sender: str
-    subject: str
-    date: str
-    body: str
-    textBody: str
-    htmlBody: str
-```
+This guide provides a basic overview of how to use the Pixlr API module. For detailed information on method parameters and return values, refer to the module's source code or documentation.

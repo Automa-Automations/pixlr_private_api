@@ -1,35 +1,32 @@
-import unittest
-from temp_email_automa.main import TempMail, Email
+import threading
+from pixlr_private_api.main import PixlrApi
 
 
-class TestTempMail(unittest.TestCase):
-    def setUp(self):
-        self.temp_mail = TempMail()
+def gen_imgase():
+    pixlr = PixlrApi()
+    pixlr.register()
+    pixlr.verify_email()
 
-    def test_generate_random_email_address(self):
-        self.temp_mail.generate_random_email_address()
-        self.assertIsNotNone(self.temp_mail.login)
-        self.assertIsNotNone(self.temp_mail.domain)
+    def gen():
+        print(pixlr.generate_image(1024, 1024, 1, "A happy cat"))
 
-    def test_get_list_of_active_domains(self):
-        domains = self.temp_mail.get_list_of_active_domains()
-        self.assertIsInstance(domains, list)
-        self.assertGreater(len(domains), 0)
+    threads = []
+    for _ in range(20):
+        thread = threading.Thread(target=gen)
+        thread.start()
+        threads.append(thread)
 
-    def test_get_email_list(self):
-        self.temp_mail.generate_random_email_address()
-        emails = self.temp_mail.get_list_of_emails()
-        self.assertIsInstance(emails, list)
+    for thread in threads:
+        thread.join()
 
-    def test_get_single_email(self):
-        self.temp_mail.generate_random_email_address()
-        emails = self.temp_mail.get_list_of_emails()
-        if emails:
-            email = self.temp_mail.get_single_email(emails[0]["id"])
-            self.assertIsInstance(email, Email)
-        else:
-            self.skipTest("No emails found")
+    pixlr.delete_account()
 
 
-if __name__ == "__main__":
-    unittest.main()
+thhreads = []
+for i in range(3):
+    thread = threading.Thread(target=gen_imgase)
+    thread.start()
+    thhreads.append(thread)
+
+for thread in thhreads:
+    thread.join()
