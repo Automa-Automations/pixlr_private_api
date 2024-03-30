@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pixlr_private_api",
-    version="0.0.1",
+    version="0.0.2",
     description="A Python Package to Generate Images with http://pixlr.com programmatically.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
