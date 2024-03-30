@@ -1,32 +1,33 @@
-import threading
+import unittest
 from pixlr_private_api.main import PixlrApi
 
 
-def gen_imgase():
-    pixlr = PixlrApi()
-    pixlr.register()
-    pixlr.verify_email()
+class TestPixlrApi(unittest.TestCase):
+    def test_register(self):
+        api = PixlrApi()
+        assert api.register() is True
 
-    def gen():
-        print(pixlr.generate_image(1024, 1024, 1, "A happy cat"))
+    def test_verify(self):
+        api = PixlrApi()
+        assert api.register() is True
+        assert api.verify_email() is True
+        assert api.bearer_token is not None
 
-    threads = []
-    for _ in range(20):
-        thread = threading.Thread(target=gen)
-        thread.start()
-        threads.append(thread)
+    def test_delete(self):
+        api = PixlrApi()
+        assert api.register() is True
+        assert api.verify_email() is True
+        assert api.delete_account() is True
 
-    for thread in threads:
-        thread.join()
+    def test_generate_image(self):
+        api = PixlrApi()
+        assert api.register() is True
+        assert api.verify_email() is True
+        assert len(api.generate_image(1024, 1024, 1, "An Image of a cute Cat!")) > 0
+        assert len(api.generate_image(1344, 768, 1, "An Image of a cute Dog!")) > 0
+        assert len(api.generate_image(768, 1344, 1, "An Image of a cute Bird!")) > 0
+        api.delete_account()
 
-    pixlr.delete_account()
 
-
-thhreads = []
-for i in range(1):
-    thread = threading.Thread(target=gen_imgase)
-    thread.start()
-    thhreads.append(thread)
-
-for thread in thhreads:
-    thread.join()
+if __name__ == "__main__":
+    unittest.main()
