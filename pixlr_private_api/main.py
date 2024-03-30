@@ -19,7 +19,7 @@ class PixlrApi:
         password = email
 
         cookies = {
-            "country": "ZA",
+            "country": "US",
             "lang": "en-US",
         }
 
@@ -59,6 +59,7 @@ class PixlrApi:
 
         response_json = response.json()
         if response_json["status"] is True:
+            print(f"PixlrApi().register(): Sucessfully Registered! {response.text}")
             return True
 
         print(f"PixlrApi().register(): Something Went Wrong! {response_json}")
@@ -87,8 +88,10 @@ class PixlrApi:
             )
             exit(1)
 
+        print(f"PixlrApi().verify_email() code: {code.group()}")
+
         cookies = {
-            "country": "ZA",
+            "country": "US",
             "lang": "en-US",
         }
 
@@ -126,15 +129,19 @@ class PixlrApi:
 
         if response_json["status"] is True:
             self.bearer_token = response_json["accessToken"]
+            print(
+                f"PixlrApi().verify_email(): Sucessfully Verified! {self.bearer_token}"
+            )
             return True
 
-        return True
+        print(f"PixlrApi().verify_email(): Something Went Wrong! {response_json}")
+        return False
 
     def generate_image(
         self, width: int, height: int, amount: int, prompt: str
     ) -> List[str]:
         cookies = {
-            "country": "ZA",
+            "country": "",
             "lang": "en-US",
             "__pat": self.bearer_token,
         }
@@ -177,6 +184,9 @@ class PixlrApi:
         response_json = response.json()
         image_paths = []
         if response_json["status"] is True:
+            print(
+                f"PixlrApi().generate_image(): Sucessfully Generated! {len(response_json['data']['images'])} Images!"
+            )
             for image in response_json["data"]["images"]:
                 image_base64 = image["image"]
                 image_base64 = image_base64.split(",")[1]
@@ -190,7 +200,7 @@ class PixlrApi:
 
     def delete_account(self):
         cookies = {
-            "country": "ZA",
+            "country": "US",
             "lang": "en-US",
             "__pat": self.bearer_token,
         }
@@ -229,6 +239,8 @@ class PixlrApi:
 
         response_json = response.json()
         if response_json["status"] is True:
+            print(f"PixlrApi().delete_account(): Sucessfully Deleted! {response.text}")
             return True
 
+        print(f"PixlrApi().delete_account(): Something Went Wrong! {response_json}")
         return False
