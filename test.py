@@ -28,6 +28,16 @@ class TestPixlrApi(unittest.TestCase):
         assert len(api.generate_image(768, 1344, 1, "An Image of a cute Bird!")) > 0
         api.delete_account()
 
+    def test_generate_phosus_token(self):
+        api = PixlrApi()
+        assert api._generate_phosus_auth_token() is not None
+
+    def test_remove_background(self):
+        api = PixlrApi()
+        image = api.remove_background("./dummy.jpg")
+        print("IMAGE PATH: ", image)
+        assert image is not None
+
 
 if __name__ == "__main__":
     unittest.main()

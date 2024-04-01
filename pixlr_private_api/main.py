@@ -3,6 +3,7 @@ from temp_email_automa.main import TempMail, Email
 import requests
 import re
 import time
+from uuid import uuid4
 from typing import Optional, List
 import base64
 
@@ -11,6 +12,7 @@ class PixlrApi:
     def __init__(self):
         self.temp_mail = TempMail()
         self.bearer_token: Optional[str] = None
+        self._phosus_auth_token: Optional[str] = None
 
     def register(self) -> bool:
         self.temp_mail.generate_random_email_address()
@@ -244,3 +246,90 @@ class PixlrApi:
 
         print(f"PixlrApi().delete_account(): Something Went Wrong! {response_json}")
         return False
+
+    def _generate_phosus_auth_token(self) -> Optional[str]:
+        cookies = {
+            "country": "ZA",
+            "lang": "en-US",
+            "has-history": "true",
+        }
+
+        headers = {
+            "accept": "*/*",
+            "accept-language": "en-GB,en;q=0.9",
+            "referer": "https://pixlr.com/express/",
+            "sec-ch-ua": '"Brave";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Linux"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "sec-gpc": "1",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        }
+
+        response = requests.get(
+            "https://pixlr.com/api/auth/ai/remove-background/",
+            cookies=cookies,
+            headers=headers,
+        )
+
+        response_json = response.json()
+        if response.status_code != 200 or response_json["status"] is False:
+            print(
+                f"PixlrApi()._generate_phosus_auth_token(): Something Went Wrong! {response.text}"
+            )
+            return None
+
+        self._phosus_auth_token = response_json["data"]
+        return self._phosus_auth_token
+
+    def _path_to_base64(self, image_path: str) -> str:
+        with open(image_path, "rb") as file:
+            image_data = file.read()
+
+        image_base64 = base64.b64encode(image_data)
+        # Convert to a string
+        image_base64_str = image_base64.decode("utf-8")
+        return image_base64_str
+
+    def _base64_to_bytes(self, image_base64: str) -> bytes:
+        return base64.b64decode(image_base64)
+
+    def remove_background(self, image_path: str) -> Optional[str]:
+        if not self._phosus_auth_token:
+            self._generate_phosus_auth_token()
+
+        url = "https://ai.phosus.com/bgremove/v1"
+        headers = {"Authorizationtoken": f"{self._phosus_auth_token}"}
+        image_base64 = self._path_to_base64(image_path)
+        print(image_base64[:100])
+        body = {"image_b64": image_base64}
+
+        response = requests.post(url, headers=headers, json=body)
+
+        response_json = response.json()
+        if response.status_code != 200 or response_json["ok"] is False:
+            print(
+                f"PixlrApi().remove_background(): Something Went Wrong! {response.text}"
+            )
+            return None
+
+        image_base64 = response_json["results"]["mask"]
+        image_data = self._base64_to_bytes(image_base64)
+        image_path_mask = f"/tmp/{uuid4().hex}.png"
+        with open(image_path_mask, "wb") as file:
+            file.write(image_data)
+
+        print("PixlrApi().remove_background(): Mask Image Saved!")
+        no_bkacground_image = f"/tmp/nbi{uuid4().hex}.png"
+        from PIL import Image
+
+        background = Image.open(image_path).convert("RGBA")
+        mask = Image.open(image_path_mask).convert("L")
+        background.putalpha(mask)
+        with open(no_bkacground_image, "wb") as file:
+            background.save(file, "PNG")
+            print("PixlrApi().remove_background(): Background Image Saved!")
+
+        return no_bkacground_image
