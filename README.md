@@ -95,6 +95,22 @@ This Python module provides a simple interface for automating actions on the Pix
     pixlr.super_resolution(image_path, image_style) # Returns a new image Path with Transfered Style!
     ```
 
+12. **Image Caption Generating - Generating Captions/Descriptions From Images**
+
+    ```python
+
+    image_path = "/tmp/1e62c8856e064e04b1cf3d71739a1d2b.png" # The image of your coice
+    pixlr.generate_image_caption(image_path) # Returns a string value of the caption!
+    ```
+
+13. **Image Tags Generating - Generating Tags/Keywords From Images**
+
+    ```python
+
+    image_path = "/tmp/1e62c8856e064e04b1cf3d71739a1d2b.png" # The image of your coice
+    pixlr.generate_image_tags(image_path) # Returns a List of tags/keywords List[str]
+    ```
+
 ### Additional Notes:
 
 - Ensure to handle errors and exceptions appropriately for robust usage.

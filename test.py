@@ -80,6 +80,20 @@ class TestPixlrApi(unittest.TestCase):
         print("test_style_transfer IMAGE PATH: ", image)
         assert image is not None
 
+    @test_decorator
+    def test_icaption(self):
+        api = PixlrApi()
+        caption = api.generate_image_caption("./dummy.jpg")
+        print("test_icaption CAPTION: ", caption)
+        assert caption is not None
+
+    @test_decorator
+    def test_ikeyword(self):
+        api = PixlrApi()
+        tags = api.generate_image_tags("./dummy.jpg")
+        print("test_ikeyword Tags: ", tags)
+        assert tags is not None
+
 
 if __name__ == "__main__":
     # Ask which tests to run.

@@ -462,3 +462,45 @@ class PixlrApi:
 
         print("PixlrApi().style_transfer(): Style Transfered, Image Saved!")
         return image_path_style_transfer
+
+    def generate_image_caption(self, image_path: str) -> Optional[str]:
+        if not self._phosus_auth_token:
+            self._generate_phosus_auth_token()
+
+        url = "https://ai.phosus.com/icaption/v1"
+        headers = {"Authorizationtoken": f"{self._phosus_auth_token}"}
+        image_base64 = self._path_to_base64(image_path)
+        body = {"image_b64": image_base64}
+
+        response = requests.post(url, headers=headers, json=body)
+        response_json = response.json()
+        if response.status_code != 200:
+            print(
+                f"PixlrApi().generate_image_caption(): Something Went Wrong! {response.text}"
+            )
+            return None
+
+        caption = response_json["prediction"]
+        print("PixlrApi().generate_image_caption(): Caption Generated!")
+        return caption
+
+    def generate_image_tags(self, image_path: str) -> Optional[List[str]]:
+        if not self._phosus_auth_token:
+            self._generate_phosus_auth_token()
+
+        url = "https://ai.phosus.com/ikeyword/v1"
+        headers = {"Authorizationtoken": f"{self._phosus_auth_token}"}
+        image_base64 = self._path_to_base64(image_path)
+        body = {"image_b64": image_base64}
+
+        response = requests.post(url, headers=headers, json=body)
+        response_json = response.json()
+        if response.status_code != 200:
+            print(
+                f"PixlrApi().generate_image_tags(): Something Went Wrong! {response.text}"
+            )
+            return None
+
+        tags = response_json["prediction"]
+        print("PixlrApi().generate_image_tags(): Tags Generated!")
+        return tags
