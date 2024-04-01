@@ -1,6 +1,7 @@
 import random
 from temp_email_automa.main import TempMail, Email
 import requests
+from PIL import Image
 import re
 import time
 from uuid import uuid4
@@ -303,7 +304,6 @@ class PixlrApi:
         url = "https://ai.phosus.com/bgremove/v1"
         headers = {"Authorizationtoken": f"{self._phosus_auth_token}"}
         image_base64 = self._path_to_base64(image_path)
-        print(image_base64[:100])
         body = {"image_b64": image_base64}
 
         response = requests.post(url, headers=headers, json=body)
@@ -323,7 +323,6 @@ class PixlrApi:
 
         print("PixlrApi().remove_background(): Mask Image Saved!")
         no_bkacground_image = f"/tmp/nbi{uuid4().hex}.png"
-        from PIL import Image
 
         background = Image.open(image_path).convert("RGBA")
         mask = Image.open(image_path_mask).convert("L")
@@ -333,3 +332,27 @@ class PixlrApi:
             print("PixlrApi().remove_background(): Background Image Saved!")
 
         return no_bkacground_image
+
+    def auto_fix(self, image_path: str) -> Optional[str]:
+        if not self._phosus_auth_token:
+            self._generate_phosus_auth_token()
+
+        url = "https://ai.phosus.com/autofix/v1"
+        headers = {"Authorizationtoken": f"{self._phosus_auth_token}"}
+        image_base64 = self._path_to_base64(image_path)
+        body = {"image_b64": image_base64}
+
+        response = requests.post(url, headers=headers, json=body)
+        response_json = response.json()
+        if response.status_code != 200 or response_json["ok"] is False:
+            print(f"PixlrApi().auto_fix(): Something Went Wrong! {response.text}")
+            return None
+
+        image_base64 = response_json["results"]["output"]
+        image_data = self._base64_to_bytes(image_base64)
+        image_path_auto_fix = f"/tmp/{uuid4().hex}.png"
+        with open(image_path_auto_fix, "wb") as file:
+            file.write(image_data)
+
+        print("PixlrApi().auto_fix(): Auto Fix Image Saved!")
+        return image_path_auto_fix
