@@ -57,10 +57,10 @@ class TestPixlrApi(unittest.TestCase):
         assert image is not None
 
     @test_decorator
-    def test_auto_fix(self):
+    def test_lowlight_enhance(self):
         api = PixlrApi()
         image = api.auto_fix("./dummy.jpg")
-        print("test_auto_fix IMAGE PATH: ", image)
+        print("test_lowlight_enhance IMAGE PATH: ", image)
         assert image is not None
 
 

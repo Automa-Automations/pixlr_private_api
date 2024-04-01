@@ -356,3 +356,29 @@ class PixlrApi:
 
         print("PixlrApi().auto_fix(): Auto Fix Image Saved!")
         return image_path_auto_fix
+
+    def lowlight_enhance(self, image_path: str) -> Optional[str]:
+        if not self._phosus_auth_token:
+            self._generate_phosus_auth_token()
+
+        url = "https://ai.phosus.com/lowlight/v1"
+        headers = {"Authorizationtoken": f"{self._phosus_auth_token}"}
+        image_base64 = self._path_to_base64(image_path)
+        body = {"image_b64": image_base64}
+
+        response = requests.post(url, headers=headers, json=body)
+        response_json = response.json()
+        if response.status_code != 200 or response_json["ok"] is False:
+            print(
+                f"PixlrApi().lowlight_enhance(): Something Went Wrong! {response.text}"
+            )
+            return None
+
+        image_base64 = response_json["results"]["output"]
+        image_data = self._base64_to_bytes(image_base64)
+        image_path_lowlight_enhance = f"/tmp/{uuid4().hex}.png"
+        with open(image_path_lowlight_enhance, "wb") as file:
+            file.write(image_data)
+
+        print("PixlrApi().lowlight_enhance(): LowLight Enhanced  Image Saved!")
+        return image_path_lowlight_enhance

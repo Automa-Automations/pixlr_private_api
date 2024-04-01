@@ -61,7 +61,7 @@ This Python module provides a simple interface for automating actions on the Pix
     pixlr.remove_bg(image_path) # Returns a new image Path with the background Removed!
     ```
 
-8.  **Auto Fix - Automatically does f ixing**
+8.  **Auto Fix - Automatically does fixing**
 
     ```python
 
@@ -69,7 +69,15 @@ This Python module provides a simple interface for automating actions on the Pix
     pixlr.auto_fix(image_path) # Returns a new image Path with auto fixes applied
     ```
 
-#### Additional Notes:
+9.  **LowLight Enhance - Enhances the Quality of Image if in Low-Light**
+
+    ```python
+
+    image_path = "/tmp/1e62c8856e064e04b1cf3d71739a1d2b.png" # The image of your coice
+    pixlr.auto_fix(image_path) # Returns a new image Path with Low-Light Enhancements
+    ```
+
+### Additional Notes:
 
 - Ensure to handle errors and exceptions appropriately for robust usage.
 - This module interacts with Pixlr through web requests, so network connectivity is required.
