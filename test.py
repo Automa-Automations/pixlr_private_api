@@ -70,6 +70,16 @@ class TestPixlrApi(unittest.TestCase):
         print("test_super_resolution IMAGE PATH: ", image)
         assert image is not None
 
+    @test_decorator
+    def test_style_transfer(self):
+        api = PixlrApi()
+        image = api.style_transfer(
+            "./dummy.jpg",
+            "./style_transfer.png",
+        )
+        print("test_style_transfer IMAGE PATH: ", image)
+        assert image is not None
+
 
 if __name__ == "__main__":
     # Ask which tests to run.

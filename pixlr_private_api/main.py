@@ -423,11 +423,42 @@ class PixlrApi:
 
         image_base64 = response_json["results"]["output"]
         image_data = self._base64_to_bytes(image_base64)
-        image_path_lowlight_enhance = f"/tmp/{uuid4().hex}.png"
-        with open(image_path_lowlight_enhance, "wb") as file:
+        image_path_super_resolution = f"/tmp/{uuid4().hex}.png"
+        with open(image_path_super_resolution, "wb") as file:
             file.write(image_data)
 
         print(
             f"PixlrApi().super_resolution(): Scaled Image Up By: {scale}, Image Saved!"
         )
-        return image_path_lowlight_enhance
+        return image_path_super_resolution
+
+    def style_transfer(self, content_image: str, style_image: str) -> Optional[str]:
+        if not self._phosus_auth_token:
+            self._generate_phosus_auth_token()
+
+        url = "https://ai.phosus.com/styletransfer/v1"
+        headers = {
+            "Authorizationtoken": f"{self._phosus_auth_token}",
+            "Content-Type": "application/json",
+        }
+        content_base64_image = self._path_to_base64(content_image)
+        style_base64_image = self._path_to_base64(style_image)
+        body = {
+            "content_image_b64": content_base64_image,
+            "style_image_b64": style_base64_image,
+        }
+
+        response = requests.post(url, headers=headers, json=body)
+        response_json = response.json()
+        if response.status_code != 200 or response_json["ok"] is False:
+            print(f"PixlrApi().style_transfer(): Something Went Wrong! {response.text}")
+            return None
+
+        image_base64 = response_json["results"]["output"]
+        image_data = self._base64_to_bytes(image_base64)
+        image_path_style_transfer = f"/tmp/{uuid4().hex}.png"
+        with open(image_path_style_transfer, "wb") as file:
+            file.write(image_data)
+
+        print("PixlrApi().style_transfer(): Style Transfered, Image Saved!")
+        return image_path_style_transfer
