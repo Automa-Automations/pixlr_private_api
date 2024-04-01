@@ -46,16 +46,25 @@ This Python module provides a simple interface for automating actions on the Pix
    ```
 
 6. **Delete Account (Optional):**
+
    ```python
    deleted = pixlr.delete_account()
    if deleted:
        print("Account deleted successfully!")
    ```
 
+7. **Remove An Image Background**
+
+```python
+image_path = "/tmp/1e62c8856e064e04b1cf3d71739a1d2b.png" # The image of your coice
+pixlr.remove_bg(image_path) # Returns a new image Path with the background Removed!
+```
+
 #### Additional Notes:
 
 - Ensure to handle errors and exceptions appropriately for robust usage.
 - This module interacts with Pixlr through web requests, so network connectivity is required.
 - API requests may be rate-limited or subject to changes by Pixlr, so handle responses accordingly.
+- Phosus, The Second API integrated in to this, thanks to Pixlr giving us free api keys, does leave a fingerprint in the temp folder (Mask Images for removing backgrounds, But no worries, your Operating System does delete them on restart).
 
 This guide provides a basic overview of how to use the Pixlr API module. For detailed information on method parameters and return values, refer to the module's source code or documentation.
