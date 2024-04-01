@@ -59,8 +59,15 @@ class TestPixlrApi(unittest.TestCase):
     @test_decorator
     def test_lowlight_enhance(self):
         api = PixlrApi()
-        image = api.auto_fix("./dummy.jpg")
+        image = api.lowlight_enhance("./dummy.jpg")
         print("test_lowlight_enhance IMAGE PATH: ", image)
+        assert image is not None
+
+    @test_decorator
+    def test_super_resolution(self):
+        api = PixlrApi()
+        image = api.super_resolution("./dummy.jpg", 2)
+        print("test_super_resolution IMAGE PATH: ", image)
         assert image is not None
 
 

@@ -74,7 +74,16 @@ This Python module provides a simple interface for automating actions on the Pix
     ```python
 
     image_path = "/tmp/1e62c8856e064e04b1cf3d71739a1d2b.png" # The image of your coice
-    pixlr.auto_fix(image_path) # Returns a new image Path with Low-Light Enhancements
+    pixlr.lowlight_enhance(image_path) # Returns a new image Path with Enhanced Low Light
+    ```
+
+10. **Super Resolution - Scales the Image Up BY an integer Value**
+
+    ```python
+
+    image_path = "/tmp/1e62c8856e064e04b1cf3d71739a1d2b.png" # The image of your coice
+    scale = 2
+    pixlr.super_resolution(image_path, scale=scale) # Returns a new image Path with Enhanced Low Light
     ```
 
 ### Additional Notes:

@@ -4,6 +4,7 @@ import requests
 from PIL import Image
 import re
 import time
+import datetime
 from uuid import uuid4
 from typing import Optional, List
 import base64
@@ -374,11 +375,59 @@ class PixlrApi:
             )
             return None
 
-        image_base64 = response_json["results"]["output"]
+        image_base64 = response_json["results"]["image"]
         image_data = self._base64_to_bytes(image_base64)
         image_path_lowlight_enhance = f"/tmp/{uuid4().hex}.png"
         with open(image_path_lowlight_enhance, "wb") as file:
             file.write(image_data)
 
         print("PixlrApi().lowlight_enhance(): LowLight Enhanced  Image Saved!")
+        return image_path_lowlight_enhance
+
+    def super_resolution(self, image_path: str, scale: int) -> Optional[str]:
+        if not self._phosus_auth_token:
+            self._generate_phosus_auth_token()
+
+        url = "https://ai.phosus.com/sr/v1/submit-job"
+        headers = {"Authorizationtoken": f"{self._phosus_auth_token}"}
+        image_base64 = self._path_to_base64(image_path)
+        body = {"image_b64": image_base64, "scale": scale}
+
+        response = requests.post(url, headers=headers, json=body)
+        response_json = response.json()
+        if response.status_code != 202 or response_json["ok"] is False:
+            print(
+                f"PixlrApi().super_resolution(): Something Went Wrong! {response.text}"
+            )
+            return None
+
+        job_id = response.json()["results"]["id"]
+        url = f"https://ai.phosus.com/sr/v1/query-job-status?id={job_id}"
+        while True:
+            time.sleep(1)
+            response = requests.get(url, headers=headers)
+
+            print(
+                "PixlrApi().super_resolution() Waiting:"
+                + response.json()["results"]["status"]
+                + " "
+                + str(datetime.datetime.now().timestamp())
+            )
+
+            if response.json()["results"]["status"] == "DONE":
+                break
+
+        url = "https://ai.phosus.com/sr/v1/get-image?id=" + job_id
+        response = requests.get(url, headers=headers)
+        response_json = response.json()
+
+        image_base64 = response_json["results"]["output"]
+        image_data = self._base64_to_bytes(image_base64)
+        image_path_lowlight_enhance = f"/tmp/{uuid4().hex}.png"
+        with open(image_path_lowlight_enhance, "wb") as file:
+            file.write(image_data)
+
+        print(
+            f"PixlrApi().super_resolution(): Scaled Image Up By: {scale}, Image Saved!"
+        )
         return image_path_lowlight_enhance
