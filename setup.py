@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pixlr_private_api",
-    version=".".join([i.strip() for i in open("version.txt").readlines()]),
+    version="0.1.2",
     description="A Python Package to Generate Images with http://pixlr.com programmatically.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -26,5 +26,5 @@ setup(
     ],
     keywords="temp-email automation email",
     packages=find_packages(),
-    install_requires=["requests", "temp_email_automa"],
+    install_requires=["requests", "temp_email_automa", "pillow"],
 )
