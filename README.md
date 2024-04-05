@@ -10,9 +10,9 @@ This Python module provides a simple interface for automating actions on the Pix
 #### Usage Steps:
 
 1. **Install the package**:
-```bash
-pip install pixlr-private-api
-```
+   ```bash
+   pip install pixlr-private-api
+   ```
 
 2. **Import the Module:**
 
