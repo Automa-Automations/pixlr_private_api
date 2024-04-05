@@ -9,19 +9,24 @@ This Python module provides a simple interface for automating actions on the Pix
 
 #### Usage Steps:
 
-1. **Import the Module:**
+1. **Install the package**:
+```bash
+pip install pixlr-private-api
+```
+
+2. **Import the Module:**
 
    ```python
    from pixlr_private_api.main import PixlrApi
    ```
 
-2. **Initialize PixlrApi Object:**
+3. **Initialize PixlrApi Object:**
 
    ```python
    pixlr = PixlrApi()
    ```
 
-3. **Registration:**
+4. **Registration:**
 
    ```python
    registered = pixlr.register()
@@ -29,7 +34,7 @@ This Python module provides a simple interface for automating actions on the Pix
        print("Successfully registered!")
    ```
 
-4. **Email Verification:**
+5. **Email Verification:**
 
    ```python
    verified = pixlr.verify_email()
@@ -37,7 +42,7 @@ This Python module provides a simple interface for automating actions on the Pix
        print("Email verified successfully!")
    ```
 
-5. **Generate Image:**
+6. **Generate Image:**
 
    ```python
    # Provide width, height, amount, and prompt for image generation
@@ -45,7 +50,7 @@ This Python module provides a simple interface for automating actions on the Pix
    # 'images' will contain paths to the generated images
    ```
 
-6. **Delete Account (Optional):**
+7. **Delete Account (Optional):**
    ```python
    deleted = pixlr.delete_account()
    if deleted:
